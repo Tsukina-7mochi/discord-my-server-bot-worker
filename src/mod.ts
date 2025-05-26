@@ -1,5 +1,5 @@
 import { Result, ResultAsync } from "neverthrow";
-import { verifyRequestSignature } from "./verifyRequestSignature.ts";
+import { verify } from "./verify.ts";
 import { Interaction } from "./types/interaction.ts";
 import { routeInteraction } from "./router.ts";
 
@@ -19,9 +19,33 @@ export default {
       return new Response("Internal Server Error", { status: 500 });
     }
 
-    const body = await request.bytes();
+    if (request.method !== "POST") {
+      return new Response("Method Not Allowed", { status: 405 });
+    }
+
+    const url = new URL(request.url);
+    if (url.pathname !== "/") {
+      return new Response("Not Found", { status: 404 });
+    }
+
+    const signature = request.headers.get("X-Signature-Ed25519");
+    const timestamp = request.headers.get("X-Signature-Timestamp");
+
+    if (!signature) {
+      return new Response("X-Signature-Ed25519 header missing", {
+        status: 401,
+      });
+    }
+    if (!timestamp) {
+      return new Response("X-Signature-Timestamp header missing", {
+        status: 401,
+      });
+    }
+
+    const body = await request.arrayBuffer();
+
     const verifyResult = await ResultAsync.fromPromise(
-      verifyRequestSignature(request.headers, body, publicKey),
+      verify(body, signature, timestamp, publicKey),
       (e) => e,
     );
     if (verifyResult.isErr()) {
@@ -43,7 +67,13 @@ export default {
       return new Response("Internal Server Error", { status: 500 });
     }
 
+    console.log({
+      input: interaction.value,
+      output: interactionResponse.value,
+    });
+
     const responseBody = JSON.stringify(interactionResponse.value);
+
     return new Response(responseBody, { status: 200 });
   },
 };
