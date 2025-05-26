@@ -1,4 +1,4 @@
-import * as uint8ArrayUtil from "./util/uint8array/mod.ts";
+import * as uint8ArrayUtil from "./uint8Array/mod.ts";
 
 const encoder = new TextEncoder();
 
