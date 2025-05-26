@@ -5,7 +5,7 @@ const encoder = new TextEncoder();
 function createCryptoKey(key: string): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     "raw",
-    encoder.encode(key),
+    uint8ArrayUtil.fromHex(key),
     { "name": "Ed25519" },
     false,
     ["verify"],
