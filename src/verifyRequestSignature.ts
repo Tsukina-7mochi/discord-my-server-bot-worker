@@ -27,7 +27,7 @@ export async function verifyRequestSignature(
 ): Promise<boolean> {
   const signatureStr = headers.get("X-Signature-Ed25519");
   if (!signatureStr) return false;
-  const signature = encoder.encode(signatureStr);
+  const signature = uint8ArrayUtil.fromHex(signatureStr);
 
   const timestampStr = headers.get("X-Signature-Timestamp");
   if (!timestampStr) return false;
