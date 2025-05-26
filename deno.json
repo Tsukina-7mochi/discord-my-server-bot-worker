@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno serve --port 8080 --watch ./src/mod.ts",
+    "dev": "deno serve -E --env-file --port 8080 --watch ./serve.ts",
     "deploy": "deno task denoflare push discord-my-server-bot --observability --text-binding BOT_PUBLIC_KEY:9ea6524727e64741e57fc385248883f9da5dc7c57fdfbfeb51c4a6eedea91ddf --config ./denoflare.jsonc",
     "denoflare": "deno run --env-file -A --unstable-worker-options https://raw.githubusercontent.com/skymethod/denoflare/v0.7.0/cli/cli.ts",
     "tail": "deno task denoflare tail discord-my-server-bot"
