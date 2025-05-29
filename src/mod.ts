@@ -74,6 +74,11 @@ export default {
 
     const responseBody = JSON.stringify(interactionResponse.value);
 
-    return new Response(responseBody, { status: 200 });
+    return new Response(responseBody, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   },
 };

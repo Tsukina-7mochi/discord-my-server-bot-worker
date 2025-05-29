@@ -1,14 +1,24 @@
-import { Interaction, PING_INTERACTION } from "./types/interaction.ts";
-import { errAsync, okAsync, ResultAsync } from "neverthrow";
+import { Interaction, InteractionType } from "./types/interaction.ts";
+import { err, ok, Result, ResultAsync } from "neverthrow";
 import { InteractionResponse } from "./types/interactionResponse.ts";
 import { handlePing } from "./features/ping.ts";
+import { diceCommand, handleDice } from "./features/dice.ts";
+import { CommandType } from "./types/command.ts";
+
+type ResultOrAsync<T, E> = Result<T, E> | ResultAsync<T, E>;
 
 export function routeInteraction(
   interaction: Interaction,
-): ResultAsync<InteractionResponse, unknown> {
-  if (interaction.type === PING_INTERACTION) {
-    return okAsync(handlePing(interaction));
+): ResultOrAsync<InteractionResponse, unknown> {
+  if (interaction.type === InteractionType.Ping) {
+    return ok(handlePing(interaction));
+  } else if (interaction.type === InteractionType.ApplicationCommand) {
+    if (interaction.data.type === CommandType.ChatInput) {
+      if (interaction.data.name === diceCommand.name) {
+        return handleDice(interaction.data.options);
+      }
+    }
   }
 
-  return errAsync(Error(`Unknown interaction type: ${interaction.type}`));
+  return err(Error(`Unknown interaction type: ${interaction.type}`));
 }
