@@ -3,7 +3,13 @@
   "scripts": {
     "discord-my-server-bot": {
       "path": "./src/mod.ts",
-      "localPort": 8080
+      "compatibilityDate": "2025-05-29",
+      "observability": true,
+      "bindings": {
+        "BOT_PUBLIC_KEY": {
+          "value": "0de324c5f999eb232c3cb26356cc2f631f9f7acef2e81b32a99e53b1142648c8"
+        }
+      }
     }
   }
 }
